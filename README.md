@@ -19,7 +19,7 @@ CodeCommentTranslator is an open-source Python tool designed to simplify multili
 
 ### Install Dependencies
 ```bash
-git clone https://github.com/yourusername/CodeCommentTranslator.git
+git clone https://github.com/Y0oMu/CodeCommentTranslator.git
 cd CodeCommentTranslator
 pip install -r requirements.txt
 ```
