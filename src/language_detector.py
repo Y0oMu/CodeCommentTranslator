@@ -9,13 +9,13 @@ class LanguageDetector:
     Currently supports: English (en), Chinese (zh), Japanese (jp)
     """
 
-    # 用于辅助检测的语言特征模式
+    # Language feature patterns used for auxiliary detection
     PATTERNS = {
-        'zh': r'[\u4e00-\u9fff]',  # 中文字符
-        'jp': r'[\u3040-\u309f\u30a0-\u30ff]',  # 日文假名
+        'zh': r'[\u4e00-\u9fff]',  # Chinese characters
+        'jp': r'[\u3040-\u309f\u30a0-\u30ff]',  # Kana characters
     }
 
-    # langdetect 语言代码映射
+    # Language code mapping for langdetect
     LANG_MAP = {
         'zh-cn': 'zh',
         'zh-tw': 'zh',
@@ -32,7 +32,10 @@ class LanguageDetector:
     @staticmethod
     def detect_language(text: str) -> Optional[str]:
         """
-        Detect the language of the given text
+        Detect the language of the given text using "one drop rule"
+        - If contains any Chinese characters -> Chinese
+        - If contains any Japanese Kana (and no Chinese) -> Japanese 
+        - If only contains English chars -> English
 
         Args:
             text (str): Text to detect
@@ -40,33 +43,21 @@ class LanguageDetector:
         Returns:
             str: Language code ('en', 'zh', 'jp') or None if unable to detect
         """
-        # 移除常见的注释标记和空白
+        # Remove common comment markers and whitespace
         text = re.sub(r'^[\/\*\s#]+|[\*\/\s]+$', '', text).strip()
 
         if not text:
             return None
 
-        # 首先尝试使用 langdetect
-        try:
-            detected = detect(text)
-            # 映射语言代码
-            if detected in LanguageDetector.LANG_MAP:
-                return LanguageDetector.LANG_MAP[detected]
-            elif detected == 'en':
-                return 'en'
-        except LangDetectException:
-            pass  # 如果 langdetect 失败,继续使用备用方法
-
-        # 备用检测方法
-        # 检查中文
+        # Check Chinese first - one drop rule
         if re.search(LanguageDetector.PATTERNS['zh'], text):
             return 'zh'
 
-        # 检查日文假名
+        # Check Japanese Kana if no Chinese found
         if re.search(LanguageDetector.PATTERNS['jp'], text):
             return 'jp'
 
-        # 检查英文
+        # Only if no Chinese/Japanese chars found, check if pure English
         if LanguageDetector.is_english(text):
             return 'en'
 
@@ -89,3 +80,6 @@ class LanguageDetector:
 
         detected_lang = LanguageDetector.detect_language(text)
         return detected_lang == source_language.lower()
+
+
+#print(LanguageDetector.detect_language("のdocstring"))

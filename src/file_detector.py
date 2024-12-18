@@ -170,7 +170,7 @@ class PythonCommentExtractor(CommentExtractor):
         # Track positions of docstrings
         docstring_positions = set()
 
-        # 修改docstring模式，使其能更好地处理嵌套和多行情况
+        # Modify the docstring pattern to better handle nested and multi-line cases
         docstring_pattern = r'(\'\'\'[\s\S]*?\'\'\'|"""[\s\S]*?""")'
 
         current_pos = 0
@@ -182,22 +182,24 @@ class PythonCommentExtractor(CommentExtractor):
             start_pos = current_pos + match.start()
             end_pos = current_pos + match.end()
 
-            # 确保这个位置不在其他字符串中
+            # Ensure this position is not within other strings
             if not self._is_in_string(content[:start_pos], start_pos):
-                # 计算行号
+                # Calculate line number
                 line_num = content[:start_pos].count('\n') + 1
                 original = match.group().strip()
 
-                # 分析上下文来确定是否为真正的docstring
+                # Analyze the context to determine if it is a true docstring
                 prev_lines = content[:start_pos].split('\n')
                 if prev_lines:
                     last_line = prev_lines[-1].strip()
-                    # 检查是否是类定义、函数定义后的docstring，或者是赋值语句
+                    # Check if it is a docstring after class definition, function definition, or an assignment statement
                     if (last_line.endswith(':') or 
                         last_line.endswith('=') or 
-                        line_num == 1 or  # 模块级docstring
-                        re.match(r'^[ \t]*["\']', match.group())):  # 行首的docstring
+                        line_num == 1 or 
+                        # Module-level docstring
 
+                        re.match(r'^[ \t]*["\']', match.group())):  # docstring at the beginning of the line
+                        # Testing
                         comments[line_num] = {
                             'content': original[3:-3].strip(),
                             'start': len(prev_lines[-1]) - len(prev_lines[-1].lstrip()),
@@ -209,13 +211,13 @@ class PythonCommentExtractor(CommentExtractor):
                                 'line_count': original.count('\n') + 1
                             }
                         }
-                        # 记录这个docstring覆盖的所有位置
+                        # Records all positions covered by this docstring
                         for i in range(start_pos, end_pos):
                             docstring_positions.add(i)
 
             current_pos = end_pos
 
-        # Python单行注释的处理保持不变
+        # Python single-line comment handling remains unchanged
         for i, line in enumerate(lines, 1):
             if '#' in line:
                 pos = line.find('#')
@@ -301,8 +303,9 @@ class PythonCommentExtractor(CommentExtractor):
 class FileDetector:
     """Detects and processes code files"""
 
-    SUPPORTED_EXTENSIONS = {'.py', '.cpp', '.js'}
+    SUPPORTED_EXTENSIONS = {'.py', '.cpp','c','.js'}
     EXTRACTORS = {
+        '.c': CStyleCommentExtractor(),
         '.cpp': CStyleCommentExtractor(),
         '.py': PythonCommentExtractor(),
         '.js': CStyleCommentExtractor()

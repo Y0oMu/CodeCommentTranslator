@@ -24,7 +24,7 @@ class OpenAITranslator(BaseTranslator):
         openai_config = config.get('openai', {})
         self.api_key = openai_config.get('api_key')
         self.base_url = openai_config.get('base_url')
-        self.model_name = openai_config.get('model_name', 'gpt-3.5-turbo')
+        self.model_name = openai_config.get('model_name', 'gpt-4o-mini')
 
         if not self.api_key:
             raise ValueError("OpenAI API key not found in config file")
