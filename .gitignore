@@ -1,0 +1,31 @@
+qu# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+env/
+.env/
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Sensitive Information
+.env
+*.key
+
+# Build and Distribution
+build/
+dist/
+*.egg-info/
+
+test_files/

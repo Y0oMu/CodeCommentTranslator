@@ -1,0 +1,16 @@
+# OpenAI Configuration
+openai:
+  api_key: "YOUR API KEY"
+  base_url: "YOUR BASE URL"
+  model_name: "gpt-4o-mini"
+
+# Translation Configuration
+translation:
+  source_language: 'zh' 
+  target_language: "en"  # Target language for translation
+  max_workers: 4  # Number of comments to translate in one batch
+
+# You can add other translation service configurations here
+# For example:
+# google_translate:
+#   api_key: "your-google-translate-api-key"
