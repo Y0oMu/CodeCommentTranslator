@@ -6,7 +6,7 @@ openai:
 
 # Translation Configuration
 translation:
-  source_language: 'zh' 
+  source_language: 'zh' # only support zh en or jp
   target_language: "en"  # Target language for translation
   max_workers: 4  # Number of comments to translate in one batch
 
